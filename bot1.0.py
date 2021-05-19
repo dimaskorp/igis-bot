@@ -1,4 +1,4 @@
-# -*- coding: windows-1251 -*-
+# -*- coding: utf-8 -*-
 import telebot
 import requests
 from bs4 import BeautifulSoup as Bs
