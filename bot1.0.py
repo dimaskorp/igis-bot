@@ -13,22 +13,15 @@ url = 'http://igis.ru/online?obj=24&page=zapdoc'
 def slovar():
     html = requests.get(url).text
     soup = Bs(html, 'html.parser')
-    table = soup.findChildren('table', attrs={'class': 'table-border'})
-    my_table = table[0]
-    tr = my_table.findChildren(['tr'])
+    table = soup.find('table', attrs={'class': 'table-border'})
+    tr = table.find_all('tr')
     sp = []
     fio = []
     i = 0
     j = 0
-
-    for link in my_table.select('a', href=True):
-        print('https://igis.ru/online' + link['href'])
-
-
     for quote in tr:
         a = len(sp)
         if quote.attrs == {'class': ['table-border-light']}:
-
             if i < a:
                 i += 1
                 sp.append(quote.text.strip())
@@ -38,10 +31,13 @@ def slovar():
                 sp.append(quote.text.strip())
                 fio.append([])
         else:
+            quote_text = quote.text.strip()
+            for link in quote.select('a', href=True):
+                quote_href = 'https://igis.ru/online' + link['href']
             sp.append(sp[i])
             word = 'Всего номерков'
             if word in quote.text.strip():
-                fio[j].append(quote.text.strip())
+                fio[j].append(quote_text + ' ' + quote_href)
             i += 1
 
     key = list(dict.fromkeys(sp))
