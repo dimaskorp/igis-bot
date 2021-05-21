@@ -53,7 +53,7 @@ def slovar():
     return key, fio
 
 # кнопки вызывающие действия
-@bot.message_handler(commands="start")
+@bot.message_handler(commands=["start"])
 def messay(message):
     if message.text == '/start':
         bot.send_message(message.from_user.id, f'Привет, {message.from_user.first_name}!')
