@@ -11,7 +11,8 @@ key_spisok = []
 url = 'http://igis.ru/online?obj=24&page=zapdoc'
 
 def slovar():
-    html = requests.get(url).text
+    header = {"user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.41 Mobile Safari/537.36"}
+    html = requests.get(url, header).text
     soup = Bs(html, 'html.parser')
     table = soup.find('table', attrs={'class': 'table-border'})
     tr = table.find_all('tr')
