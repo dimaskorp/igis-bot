@@ -85,7 +85,7 @@ def callback_inline(call):
     for i, elem in enumerate(slovar()[0]):
         if call.data == key_spisok[i]:
             next_menu = types.InlineKeyboardMarkup()
-            back = types.InlineKeyboardButton(text='Назад', callback_data='keyboard')
+            back = types.InlineKeyboardButton(text='♻ Назад', callback_data='keyboard')
             next_menu.add(back)
             bot.edit_message_text(
                 f'Вы выбрали специализацию: {slovar()[0][i]}!\n\n' + '\n\n'.join([str(lst) for lst in slovar()[1][i]]),
