@@ -1,8 +1,8 @@
 from telebot import types
-from bs4 import BeautifulSoup as Bs
 import telebot
 import re
 import requests
+from bs4 import BeautifulSoup as Bs
 import json
 
 HEADERS = {
@@ -12,7 +12,6 @@ sp = []
 spisok_fio = []
 dep_slovar = dict()
 budget_slovar = dict()
-
 
 bot = telebot.TeleBot('1552413047:AAGpkNonW31wDJOY7-DnMRCl4iI9eElxUkw')
 key_spisok_1 = []
@@ -33,7 +32,6 @@ def f_departments():  # парсинг учреждений ижевска
     url = 'http://igis.ru/online'
     soup = Bs(get_html(url), 'lxml')
     div = soup.find_all('div', class_='row-div row-div-sm-4 row-div-md-2 row-div-bg-1')
-    # dep_slovar = dict()
     for quote in div:
         for link in quote.select('a', href=True):
             quote_href = url + link['href']
@@ -45,7 +43,7 @@ def f_departments():  # парсинг учреждений ижевска
 
 
 def budget_institutions(number):  # парсинг бюджетных
-       url = list(dep_slovar.values())[number]
+    url = list(dep_slovar.values())[number]
     soup = Bs(get_html(url), 'html.parser')
     div = soup.find('div', attrs={'class': 'headline'}).find_next('h2', text='Бюджетные учреждения')
     all_budget_institutions = div.find_all_next('h3')
@@ -64,8 +62,6 @@ def f_specialists(number):  # парсинг номерков
     soup = Bs(get_html(url), 'html.parser')
     table = soup.find('table', attrs={'class': 'table-border'})
     tr = table.find_all('tr')
-    # sp = []
-    # spisok_fio = []
     i = 0
     j = 0
     for quote in tr:
@@ -88,7 +84,6 @@ def f_specialists(number):  # парсинг номерков
             if word in quote.text.strip():
                 spisok_fio[j].append(quote_text + ' ' + quote_href)
             i += 1
-
     key = list(dict.fromkeys(sp))
     for i, elem in enumerate(spisok_fio):
         if not spisok_fio[i]:
