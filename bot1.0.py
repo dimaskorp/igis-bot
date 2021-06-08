@@ -45,16 +45,7 @@ def f_departments():  # парсинг учреждений ижевска
 
 
 def budget_institutions(number):  # парсинг бюджетных
-    # p_dep_slovar = f_departments()
-    # with open('INSTITUTIONS_OF_IZHEVSK.json', 'r') as file:
-    #     try:
-    #         data_read = json.load(file)
-    #     except Exception:
-    #         print("Empty file!!!!")
-    # url = list(data_read.values())[number2]  # адрес из словаря json
-    # url = list(p_dep_slovar.values())[number]
-
-    url = list(dep_slovar.values())[number]
+       url = list(dep_slovar.values())[number]
     soup = Bs(get_html(url), 'html.parser')
     div = soup.find('div', attrs={'class': 'headline'}).find_next('h2', text='Бюджетные учреждения')
     all_budget_institutions = div.find_all_next('h3')
@@ -69,13 +60,6 @@ def budget_institutions(number):  # парсинг бюджетных
 
 
 def f_specialists(number):  # парсинг номерков
-    # with open('BUDGET_INSTITUTIONS.json', 'r') as file:
-    #     try:
-    #         data_read = json.load(file)
-    #     except Exception:
-    #         print("Empty file!!!!")
-    # url = list(data_read.values())[number] + '&page=zapdoc'
-
     url = list(budget_slovar.values())[number] + '&page=zapdoc'
     soup = Bs(get_html(url), 'html.parser')
     table = soup.find('table', attrs={'class': 'table-border'})
@@ -133,22 +117,6 @@ def callback_inline_1(call):
                           reply_markup=main_menu_keyboard())
 
 
-# # обработчик (кнопки вызывающие действия)
-# @bot.callback_query_handler(func=lambda call: call.data == 'keyboard')
-# def name_key_2(call):
-#     number = int("".join(re.findall("\d+", data1[0])))
-#     first_menu_keyboard(number)
-#     callback_inline_2(call)
-
-
-# # обработчик (кнопки вызывающие действия)
-# @bot.callback_query_handler(func=lambda call: call.data == 'keyboard')
-# def name_key_2(call):
-#     number = int("".join(re.findall("\d+", data2[0])))
-#     second_menu_keyboard(number)
-#     callback_inline_3(call)
-
-
 @bot.callback_query_handler(func=lambda call: call.data in key_spisok_1)
 def callback_inline_2(call):
     data1.append(call.data)
@@ -179,7 +147,7 @@ def callback_inline_4(call):
     for i, elem in enumerate(key_spisok_3):
         if call.data == key_spisok_3[i]:
             next_menu = types.InlineKeyboardMarkup()
-            back = types.InlineKeyboardButton(text='🚗 Назад', callback_data='keyboard')
+            back = types.InlineKeyboardButton(text='Назад', callback_data='keyboard')
             next_menu.add(back)
             key_ = list(dict.fromkeys(sp))
             bot.edit_message_text(f'{key_[i]}!\n\n' + '\n\n'.join(spisok_fio[i]), call.message.chat.id,
@@ -205,7 +173,7 @@ def first_menu_keyboard(number):
         name_key_2 = f'key{j}'
         key_spisok_2.append(name_key_2)
         keyboard_menu.add(types.InlineKeyboardButton(text=elem, callback_data=name_key_2))
-    back = types.InlineKeyboardButton(text='🚗 Назад', callback_data='keyboard')
+    back = types.InlineKeyboardButton(text='Назад', callback_data='keyboard')
     keyboard_menu.add(back)
     return keyboard_menu
 
@@ -216,7 +184,7 @@ def second_menu_keyboard(number):
         name_key_3 = f'key{j}'
         key_spisok_3.append(name_key_3)
         keyboard_menu2.add(types.InlineKeyboardButton(text=elem, callback_data=name_key_3))
-    back = types.InlineKeyboardButton(text='🚗 Назад', callback_data='keyboard')
+    back = types.InlineKeyboardButton(text='Назад', callback_data='keyboard')
     keyboard_menu2.add(back)
     return keyboard_menu2
 
