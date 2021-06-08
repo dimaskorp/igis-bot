@@ -103,7 +103,7 @@ def f_specialists(number):  # парсинг номерков
 @bot.message_handler(commands=["start"])
 def messay(message):
     if message.text == '/start':
-        bot.send_message(message.from_user.id, f'Привет, {message.from_user.first_name}!')
+        bot.send_message(message.from_user.id, f'Привет, {message.from_user.first_name}!\nВыберите раздел:', reply_markup=main_menu_keyboard())
         bot.send_message(message.from_user.id, 'Выберите раздел:', reply_markup=main_menu_keyboard())
     elif message.text == '/help':
         bot.send_message(message.from_user.id, 'Напиши /igis')
