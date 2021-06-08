@@ -1,8 +1,8 @@
 from telebot import types
+from bs4 import BeautifulSoup as Bs
 import telebot
 import re
 import requests
-from bs4 import BeautifulSoup as Bs
 import json
 
 HEADERS = {
