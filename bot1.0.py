@@ -37,8 +37,7 @@ def messay(message):
 
 @bot.callback_query_handler(func=lambda call: call.data == 'keyboard')
 def callback_inline_1(call):
-    bot.edit_message_text('Выберите раздел:', call.message.chat.id, call.message.message_id,
-                          reply_markup=main_menu_keyboard())
+    bot.edit_message_text('Выберите раздел:', call.message.chat.id, call.message.message_id, reply_markup=main_menu_keyboard())
 
 
 @bot.callback_query_handler(func=lambda call: call.data in key_spisok_1)
@@ -48,8 +47,7 @@ def callback_inline_2(call):
         if call.data == key_spisok_1[i]:
             number = int("".join(re.findall("\d+", call.data)))
             keys = list(dep_slovar.keys())[i]
-            bot.edit_message_text(f'{keys}\n\nВыберите учреждение:', call.message.chat.id, call.message.message_id,
-                                  reply_markup=first_menu_keyboard(number))
+            bot.edit_message_text(f'{keys}\n\nВыберите учреждение:', call.message.chat.id, call.message.message_id, reply_markup=first_menu_keyboard(number))
     key_spisok_1.clear()
 
 
@@ -59,8 +57,7 @@ def callback_inline_3(call):
         if call.data == key_spisok_2[i]:
             number = int("".join(re.findall("\d+", call.data)))
             keys = list(budget_slovar.keys())[i]
-            bot.edit_message_text(f'{keys}\n\nВыберите специализацию:', call.message.chat.id, call.message.message_id,
-                                  reply_markup=second_menu_keyboard(number))
+            bot.edit_message_text(f'{keys}\n\nВыберите специализацию:', call.message.chat.id, call.message.message_id, reply_markup=second_menu_keyboard(number))
     data2.append(call.data)
     key_spisok_2.clear()
 
@@ -74,8 +71,7 @@ def callback_inline_4(call):
             back = types.InlineKeyboardButton(text='Назад', callback_data='keyboard')
             next_menu.add(back)
             key_ = list(dict.fromkeys(sp))
-            bot.edit_message_text(f'{key_[i]}!\n\n' + '\n\n'.join(spisok_fio[i]), call.message.chat.id,
-                                  call.message.message_id, reply_markup=next_menu)
+            bot.edit_message_text(f'{key_[i]}!\n\n' + '\n\n'.join(spisok_fio[i]), call.message.chat.id, call.message.message_id, reply_markup=next_menu)
     key_spisok_3.clear()
 
 
@@ -126,8 +122,6 @@ def f_departments():  # парсинг учреждений ижевска
             quote_href = url + link['href']
             text = quote.get_text(separator=' ').strip()
             dep_slovar[text] = quote_href
-    with open('INSTITUTIONS_OF_IZHEVSK.json', 'w') as file:
-        json.dump(dep_slovar, file, indent=4, ensure_ascii=False)
     return dep_slovar
 
 
@@ -136,13 +130,10 @@ def budget_institutions(number):  # парсинг бюджетных
     soup = Bs(get_html(url), 'html.parser')
     div = soup.find('div', attrs={'class': 'headline'}).find_next('h2', text='Бюджетные учреждения')
     all_budget_institutions = div.find_all_next('h3')
-    # budget_slovar = dict()
     for quote in all_budget_institutions:
         itemName = quote.find_next('a').text.strip()
         quote_href = 'https://igis.ru/online' + quote.find_next('a', href=True).get('href')
         budget_slovar[itemName] = quote_href
-    with open('BUDGET_INSTITUTIONS.json', 'w') as file:
-        json.dump(budget_slovar, file, indent=4, ensure_ascii=False)
     return budget_slovar
 
 
@@ -178,10 +169,7 @@ def f_specialists(number):  # парсинг номерков
         if not spisok_fio[i]:
             spisok_fio[i].append('Номерков нет')
     special_slovar = dict(zip(key, spisok_fio))
-    with open('MAKE_AN_APPOINTMENT.json', 'w') as file:
-        json.dump(special_slovar, file, indent=4, ensure_ascii=False)
     return key, spisok_fio
-
 
 
 bot.polling(none_stop=True)
