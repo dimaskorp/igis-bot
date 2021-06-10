@@ -23,76 +23,6 @@ data2 = []
 data3 = []
 
 
-def get_html(url):
-    html = requests.get(url, headers=HEADERS)
-    return html.text
-
-
-def f_departments():  # парсинг учреждений ижевска
-    url = 'http://igis.ru/online'
-    soup = Bs(get_html(url), 'lxml')
-    div = soup.find_all('div', class_='row-div row-div-sm-4 row-div-md-2 row-div-bg-1')
-    for quote in div:
-        for link in quote.select('a', href=True):
-            quote_href = url + link['href']
-            text = quote.get_text(separator=' ').strip()
-            dep_slovar[text] = quote_href
-    with open('INSTITUTIONS_OF_IZHEVSK.json', 'w') as file:
-        json.dump(dep_slovar, file, indent=4, ensure_ascii=False)
-    return dep_slovar
-
-
-def budget_institutions(number):  # парсинг бюджетных
-    url = list(dep_slovar.values())[number]
-    soup = Bs(get_html(url), 'html.parser')
-    div = soup.find('div', attrs={'class': 'headline'}).find_next('h2', text='Бюджетные учреждения')
-    all_budget_institutions = div.find_all_next('h3')
-    # budget_slovar = dict()
-    for quote in all_budget_institutions:
-        itemName = quote.find_next('a').text.strip()
-        quote_href = 'https://igis.ru/online' + quote.find_next('a', href=True).get('href')
-        budget_slovar[itemName] = quote_href
-    with open('BUDGET_INSTITUTIONS.json', 'w') as file:
-        json.dump(budget_slovar, file, indent=4, ensure_ascii=False)
-    return budget_slovar
-
-
-def f_specialists(number):  # парсинг номерков
-    url = list(budget_slovar.values())[number] + '&page=zapdoc'
-    soup = Bs(get_html(url), 'html.parser')
-    table = soup.find('table', attrs={'class': 'table-border'})
-    tr = table.find_all('tr')
-    i = 0
-    j = 0
-    for quote in tr:
-        a = len(sp)
-        if quote.attrs == {'class': ['table-border-light']}:
-            if i < a:
-                i += 1
-                sp.append(quote.text.strip())
-                spisok_fio.append([])
-                j += 1
-            else:
-                sp.append(quote.text.strip())
-                spisok_fio.append([])
-        else:
-            quote_text = quote.text.strip()
-            for link in quote.select('a', href=True):
-                quote_href = 'https://igis.ru/online' + link['href']
-            sp.append(sp[i])
-            word = 'Всего номерков'
-            if word in quote.text.strip():
-                spisok_fio[j].append(quote_text + ' ' + quote_href)
-            i += 1
-    key = list(dict.fromkeys(sp))
-    for i, elem in enumerate(spisok_fio):
-        if not spisok_fio[i]:
-            spisok_fio[i].append('Номерков нет')
-    special_slovar = dict(zip(key, spisok_fio))
-    with open('MAKE_AN_APPOINTMENT.json', 'w') as file:
-        json.dump(special_slovar, file, indent=4, ensure_ascii=False)
-    return key, spisok_fio
-
 
 # кнопки вызывающие действия
 @bot.message_handler(commands=["start"])
@@ -181,6 +111,77 @@ def second_menu_keyboard(number):
     back = types.InlineKeyboardButton(text='Назад', callback_data='keyboard')
     keyboard_menu2.add(back)
     return keyboard_menu2
+
+def get_html(url):
+    html = requests.get(url, headers=HEADERS)
+    return html.text
+
+
+def f_departments():  # парсинг учреждений ижевска
+    url = 'http://igis.ru/online'
+    soup = Bs(get_html(url), 'lxml')
+    div = soup.find_all('div', class_='row-div row-div-sm-4 row-div-md-2 row-div-bg-1')
+    for quote in div:
+        for link in quote.select('a', href=True):
+            quote_href = url + link['href']
+            text = quote.get_text(separator=' ').strip()
+            dep_slovar[text] = quote_href
+    with open('INSTITUTIONS_OF_IZHEVSK.json', 'w') as file:
+        json.dump(dep_slovar, file, indent=4, ensure_ascii=False)
+    return dep_slovar
+
+
+def budget_institutions(number):  # парсинг бюджетных
+    url = list(dep_slovar.values())[number]
+    soup = Bs(get_html(url), 'html.parser')
+    div = soup.find('div', attrs={'class': 'headline'}).find_next('h2', text='Бюджетные учреждения')
+    all_budget_institutions = div.find_all_next('h3')
+    # budget_slovar = dict()
+    for quote in all_budget_institutions:
+        itemName = quote.find_next('a').text.strip()
+        quote_href = 'https://igis.ru/online' + quote.find_next('a', href=True).get('href')
+        budget_slovar[itemName] = quote_href
+    with open('BUDGET_INSTITUTIONS.json', 'w') as file:
+        json.dump(budget_slovar, file, indent=4, ensure_ascii=False)
+    return budget_slovar
+
+
+def f_specialists(number):  # парсинг номерков
+    url = list(budget_slovar.values())[number] + '&page=zapdoc'
+    soup = Bs(get_html(url), 'html.parser')
+    table = soup.find('table', attrs={'class': 'table-border'})
+    tr = table.find_all('tr')
+    i = 0
+    j = 0
+    for quote in tr:
+        a = len(sp)
+        if quote.attrs == {'class': ['table-border-light']}:
+            if i < a:
+                i += 1
+                sp.append(quote.text.strip())
+                spisok_fio.append([])
+                j += 1
+            else:
+                sp.append(quote.text.strip())
+                spisok_fio.append([])
+        else:
+            quote_text = quote.text.strip()
+            for link in quote.select('a', href=True):
+                quote_href = 'https://igis.ru/online' + link['href']
+            sp.append(sp[i])
+            word = 'Всего номерков'
+            if word in quote.text.strip():
+                spisok_fio[j].append(quote_text + ' ' + quote_href)
+            i += 1
+    key = list(dict.fromkeys(sp))
+    for i, elem in enumerate(spisok_fio):
+        if not spisok_fio[i]:
+            spisok_fio[i].append('Номерков нет')
+    special_slovar = dict(zip(key, spisok_fio))
+    with open('MAKE_AN_APPOINTMENT.json', 'w') as file:
+        json.dump(special_slovar, file, indent=4, ensure_ascii=False)
+    return key, spisok_fio
+
 
 
 bot.polling(none_stop=True)
