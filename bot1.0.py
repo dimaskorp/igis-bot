@@ -3,15 +3,13 @@ from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 import requests
 from bs4 import BeautifulSoup as BS
+import lxml
 import json
 
-HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.41 Mobile Safari/537.36'}
 TOKEN = '1552413047:AAGpkNonW31wDJOY7-DnMRCl4iI9eElxUkw'
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 
-url = 'https://igis.ru/online?obj=71&page=zapdoc'
 
 
 def get_html():
@@ -60,21 +58,13 @@ def get_html():
 
 
 # кнопки вызывающие действия
-@dp.message_handler(commands=['start', 'help'])
+@dp.message_handler(commands=['start'])
 async def send_welcome(msg: types.Message):
     await msg.answer(f'Я бот. Приятно познакомиться, {msg.from_user.first_name}')
-
-    await msg.answer(f'{get_html()}!\n\n' )
-
-
-@dp.message_handler(content_types=['text'])
-async def get_text_messages(msg: types.Message):
-    if msg.text.lower() == 'привет':
-        await msg.answer('Привет!')
-    else:
-        await msg.answer('Не понимаю, что это значит.')
+    rez = get_html()
+    for i, elem in enumerate(rez[0]):
+        await msg.answer(f'{elem}\n\n' + '\n\n'.join(rez[1][i]))
 
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
-
