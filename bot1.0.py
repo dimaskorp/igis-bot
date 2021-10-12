@@ -1,6 +1,7 @@
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
+from aiogram.types import ParseMode
 import requests
 from bs4 import BeautifulSoup as BS
 import lxml
@@ -9,7 +10,6 @@ import json
 TOKEN = '1552413047:AAGpkNonW31wDJOY7-DnMRCl4iI9eElxUkw'
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
-
 
 
 def get_html():
@@ -60,10 +60,11 @@ def get_html():
 # кнопки вызывающие действия
 @dp.message_handler(commands=['start'])
 async def send_welcome(msg: types.Message):
-    await msg.answer(f'Я бот. Приятно познакомиться, {msg.from_user.first_name}')
+    await msg.answer(f'*РЕСПУБЛИКАНСКАЯ СТОМАТОЛОГИЧЕСКАЯ ПОЛИКЛИНИКА* Запись к специалистам',
+                     parse_mode=ParseMode.MARKDOWN)
     rez = get_html()
     for i, elem in enumerate(rez[0]):
-        await msg.answer(f'{elem}\n\n' + '\n\n'.join(rez[1][i]))
+        await msg.answer(f'*{elem}*\n\n' + '\n\n'.join(rez[1][i]), parse_mode=ParseMode.MARKDOWN
 
 
 if __name__ == '__main__':
