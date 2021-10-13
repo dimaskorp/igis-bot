@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup as BS
-import asyncio
-import json
+
 
 HEADERS = {
     "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Mobile Safari/537.36"
@@ -82,7 +81,4 @@ def f_specialists(number):  # парсинг номерков
     return key, spisok_fio
 
 
-if __name__ == '__main__':
-    f_departments()
-    budget_institutions(number=2)
-    f_specialists(number=8)
+
