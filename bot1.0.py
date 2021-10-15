@@ -16,6 +16,9 @@ data_3 = []
 # кнопки вызывающие действия
 @dp.message_handler(commands=['start'])
 async def start(msg: types.Message):
+    kb.spisok_key_1.clear()
+    kb.spisok_key_2.clear()
+    kb.spisok_key_3.clear()
     await bot.send_message(msg.from_user.id, 'Привет {0.first_name}!\nВыберите раздел:'.format(msg.from_user), reply_markup=kb.keyboard_1())
 
 
